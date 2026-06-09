@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="AsukaLin, blog">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsukaLin</title>
+
+    <!-- 防闪烁脚本（必须保留在 head 最前面） -->
+    <script>
+        (function () {
+            const stored = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            if (stored) {
+                document.documentElement.setAttribute('data-theme', stored);
+            } else {
+                document.documentElement.setAttribute('data-theme', prefersDark.matches ? 'dark' : 'light');
+            }
+            prefersDark.addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                }
+            });
+        })();
+    </script>
+
+    <!-- 主题 CSS（原文件，完全不变） -->
+    <link rel="stylesheet" href="css/theme.css">
+
+    <!-- 新增扩展 CSS（独立文件） -->
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+</head>
+<body>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌓</button>
+
+    <div class="main-layout">
+        <!-- 左侧个人信息（毛玻璃卡片） -->
+        <aside class="sidebar">
+            <div class="glass-card">
+                <img class="avatar" src="images/avatar.jpeg" alt="我的头像">
+                <h2>AsukaLin</h2>
+                <p class="bio">这里是一段个人简介，可以写你的技术栈、兴趣爱好等。</p>
+
+                <div class="social-links">
+                    <a href="https://github.com/vibolin" target="_blank" class="btn-link">GitHub</a>
+                    <a href="https://gitee.com/asukalin02" target="_blank" class="btn-link">Gitee</a>
+                </div>
+
+                <div class="github-chart">
+                    <h2>GitHub 贡献</h2>
+                    <div class="chart-clip">
+                        <img src="https://ghchart.rshah.org/vibolin" alt="GitHub 贡献图" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧内容区 -->
+        <main class="content">
+            <!-- 文章列表容器 -->
+            <div id="articles-container" class="articles-list"></div>
+            <!-- 文章详细内容容器（初始隐藏） -->
+            <div id="content" class="article-content" style="display: none;"></div>
+        </main>
+    </div>
+
+    <!-- 独立 JS 文件（位于 js 文件夹） -->
+    <script src="js/app.js"></script>
+</body>
+</html>

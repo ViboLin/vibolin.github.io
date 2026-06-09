@@ -1,0 +1,280 @@
+/* ==========================================
+   theme.css - 个人博客主题样式
+   ========================================== */
+
+/* ---------- 1. 自定义字体（思源宋体双保险） ---------- */
+@font-face {
+    font-family: 'Noto Serif SC';
+    src:
+        url('https://fonts.gstatic.com/s/notoserifsc/v22/H4c8BXePl9DZ0Xe7gG9cyOj7mm63SzZBEtERe7Y.woff2') format('woff2'),
+        url('../fonts/NotoSerifSC-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Serif SC';
+    src:
+        url('https://fonts.gstatic.com/s/notoserifsc/v22/H4c8BXePl9DZ0Xe7gG9cyOj7mm63SzZBEtERe7Y.woff2') format('woff2'),
+        url('../fonts/NotoSerifSC-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- 2. 主题变量（暗色为默认） ---------- */
+:root,
+[data-theme="dark"] {
+    --bg: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text: #e0e0e0;
+    --text-secondary: #a0a0b0;
+    --heading-color: #ffffff;
+    --link: #8ab4f8;
+    --border: #2a2a4a;
+    --shadow: rgba(255,255,255,0.05);
+    --bg-image: url('../images/element/motoko.jpg');
+    --glass-bg: rgba(20, 30, 50, 0.6);
+    --glass-border: rgba(255,255,255,0.15);
+    --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    --glass-blur: 12px;
+    --card-radius: 20px;   /* 你喜欢的圆角大小，可自由调整 */
+}
+
+[data-theme="light"] {
+    --bg: #fcf6e8;                /* 与背景图主色一致，兜底 */
+    --bg-secondary: #f5f0e6;
+    --text: #333333;
+    --text-secondary: #555555;
+    --heading-color: #1a1a1a;
+    --link: #0366d6;
+    --border: rgba(0,0,0,0.12);
+    --shadow: rgba(0,0,0,0.06);
+    --bg-image: url('../images/element/sakura.png');
+    --glass-bg: transparent;      /* 全透明，只靠模糊 */
+    --glass-border: rgba(0,0,0,0.08);
+    --card-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    --glass-blur: 12px;
+    --card-radius: 20px;   /* 你喜欢的圆角大小，可自由调整 */
+}
+
+/* ---------- 3. 全局基础 ---------- */
+html {
+    font-size: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    background-image: var(--bg-image);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    font-size: 1.3rem;
+    line-height: 1.8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif SC', "Times New Roman", "宋体", "SimSun", serif;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+/* ---------- 4. 主布局（Grid 精准三七分） ---------- */
+.main-layout {
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+.sidebar,
+.content {
+    min-width: 0;
+}
+
+/* ---------- 5. 毛玻璃卡片 ---------- */
+.glass-card,
+.article-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 1.8rem;
+    color: var(--text);
+    transition: background-color 0.3s, border 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.article-card {
+    padding: 1rem;
+    border-radius: 16px;
+}
+
+.article-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ---------- 6. 左侧个人信息 ---------- */
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid var(--border);
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.social-links {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid var(--glass-border);
+    color: var(--link);
+    text-decoration: none;
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px);
+    transition: background-color 0.2s;
+}
+
+.btn-link:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ---------- 7. GitHub 贡献图（增强模糊） ---------- */
+.github-chart {
+    margin-top: 1.5rem;
+}
+
+.github-chart h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+}
+
+.chart-clip {
+    width: 100%;
+    height: 130px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);           /* 半透明底色增强模糊可见度 */
+    backdrop-filter: blur(12px);                 /* 新增模糊效果 */
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--card-shadow);
+}
+
+.chart-clip img {
+    display: block;
+    float: right;
+    height: 100%;
+    width: 860px;
+    max-width: none;
+    transition: filter 0.3s;
+}
+
+.chart-clip::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 明暗滤镜 */
+[data-theme="dark"] .chart-clip img {
+    filter: invert(0.9) hue-rotate(180deg);
+}
+[data-theme="light"] .chart-clip img {
+    filter: none;
+}
+
+/* ---------- 8. 右侧文章列表 ---------- */
+.articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.article-card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.article-card .card-cover {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: var(--bg-secondary);
+}
+
+.article-card .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+    color: var(--text);
+}
+
+/* ---------- 9. 响应式 ---------- */
+@media (max-width: 768px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar,
+    .content {
+        min-width: 0;
+    }
+
+    .chart-clip {
+        height: 100px;
+    }
+
+    .article-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .article-card .card-cover {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+}

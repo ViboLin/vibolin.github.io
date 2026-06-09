@@ -1,0 +1,69 @@
+/* ==========================================
+   custom.css - 博客扩展样式（不修改原 theme.css）
+   ========================================== */
+
+/* 主题切换按钮定位与样式 */
+.theme-toggle {
+    position: fixed;
+    top: 2rem;          /* 改为 2rem，与左侧卡片顶部对齐 */
+    right: 1rem;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s;
+}
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* 在移动端（≤768px）稍微调整 top，避免与顶部距离过远 */
+@media (max-width: 768px) {
+    .theme-toggle {
+        top: 1rem;      /* 移动端仍保持 1rem，因为左侧卡片顶部边距可能变化 */
+    }
+}
+
+/* 文章内容区：确保毛玻璃卡片与左侧对齐 */
+.article-content .glass-card {
+    margin-top: 0;
+}
+
+/* 返回按钮样式 */
+.back-button {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.4rem 1rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    color: var(--link);
+    cursor: pointer;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+}
+.back-button:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Markdown 内容样式增强 */
+.markdown-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+.markdown-body pre {
+    overflow-x: auto;
+    padding: 1rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+}
+.markdown-body a {
+    color: var(--link);
+}
