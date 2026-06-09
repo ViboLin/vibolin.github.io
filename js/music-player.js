@@ -1,6 +1,5 @@
-// 微缩版音乐播放器 - 独立逻辑
+// 微缩版音乐播放器 - 左侧延伸音量面板（紧凑版）
 (function() {
-    // 歌曲列表（请替换为您的实际音乐文件）
     const songs = [
         {
             name: 'Sea of Tranquility',
@@ -14,18 +13,18 @@
             src: 'sound/Белаякошка (小白猫).mp3',
             cover: 'image/sound02.jpeg'
         }
-        // 可继续添加
     ];
 
     let currentIndex = 0;
     let isPlaying = false;
     let audio = null;
 
-    // DOM 元素
-    let playBtn, prevBtn, nextBtn, volumeSlider, progressBar, progressFilled;
+    let playBtn, prevBtn, nextBtn, volumeBtn;
+    let verticalVolume;
+    let progressBar, progressFilled;
     let currentTimeSpan, totalTimeSpan, songNameSpan, singerSpan, coverImg;
+    let volumeExtension;
 
-    // 初始化播放器
     function initPlayer() {
         audio = document.getElementById('mini-audio-player');
         if (!audio) {
@@ -35,11 +34,11 @@
             document.body.appendChild(audio);
         }
 
-        // 获取 UI 元素
         playBtn = document.getElementById('mini-play-btn');
         prevBtn = document.getElementById('mini-prev-btn');
         nextBtn = document.getElementById('mini-next-btn');
-        volumeSlider = document.getElementById('mini-volume');
+        volumeBtn = document.getElementById('mini-volume-btn');
+        verticalVolume = document.getElementById('mini-vertical-volume');
         progressBar = document.getElementById('mini-progress-bar');
         progressFilled = document.getElementById('mini-progress-filled');
         currentTimeSpan = document.getElementById('mini-current-time');
@@ -47,16 +46,28 @@
         songNameSpan = document.getElementById('mini-song-name');
         singerSpan = document.getElementById('mini-singer');
         coverImg = document.getElementById('mini-cover-img');
+        volumeExtension = document.getElementById('mini-volume-extension');
 
-        if (!playBtn) return; // 未找到播放器容器，不初始化
+        if (!playBtn) return;
 
-        // 绑定事件
         playBtn.addEventListener('click', togglePlay);
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
-        volumeSlider.addEventListener('input', (e) => {
-            if (audio) audio.volume = parseFloat(e.target.value);
-        });
+        
+        if (volumeBtn && volumeExtension) {
+            volumeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                volumeExtension.classList.toggle('open');
+            });
+        }
+
+        if (verticalVolume) {
+            verticalVolume.addEventListener('input', (e) => {
+                if (audio) audio.volume = parseFloat(e.target.value);
+            });
+            verticalVolume.value = audio ? audio.volume : 0.8;
+        }
+
         progressBar.addEventListener('click', setProgress);
         audio.addEventListener('timeupdate', updateProgress);
         audio.addEventListener('loadedmetadata', () => {
@@ -64,9 +75,8 @@
         });
         audio.addEventListener('ended', nextSong);
 
-        // 加载第一首歌曲
         loadSong(currentIndex);
-        audio.volume = parseFloat(volumeSlider.value);
+        if (audio) audio.volume = verticalVolume ? parseFloat(verticalVolume.value) : 0.8;
     }
 
     function formatTime(seconds) {
@@ -87,7 +97,7 @@
         currentTimeSpan.textContent = '00:00';
         totalTimeSpan.textContent = '00:00';
         if (isPlaying) {
-            audio.play().catch(e => console.log('自动播放被阻止'));
+            audio.play().catch(e => console.log('播放被阻止'));
         }
     }
 
@@ -129,7 +139,6 @@
         audio.currentTime = percent * audio.duration;
     }
 
-    // 等待 DOM 加载完成
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initPlayer);
     } else {

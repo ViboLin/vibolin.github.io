@@ -39,11 +39,11 @@
     --glass-border: rgba(255,255,255,0.15);
     --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
     --glass-blur: 12px;
-    --card-radius: 20px;   /* 你喜欢的圆角大小，可自由调整 */
+    --card-radius: 20px;
 }
 
 [data-theme="light"] {
-    --bg: #fcf6e8;                /* 与背景图主色一致，兜底 */
+    --bg: #fcf6e8;
     --bg-secondary: #f5f0e6;
     --text: #333333;
     --text-secondary: #555555;
@@ -52,11 +52,11 @@
     --border: rgba(0,0,0,0.12);
     --shadow: rgba(0,0,0,0.06);
     --bg-image: url('../images/element/sakura.png');
-    --glass-bg: transparent;      /* 全透明，只靠模糊 */
+    --glass-bg: transparent;
     --glass-border: rgba(0,0,0,0.08);
     --card-shadow: 0 8px 32px rgba(0,0,0,0.04);
     --glass-blur: 12px;
-    --card-radius: 20px;   /* 你喜欢的圆角大小，可自由调整 */
+    --card-radius: 20px;
 }
 
 /* ---------- 3. 全局基础 ---------- */
@@ -131,32 +131,32 @@ h6 { font-size: 1rem; }
     transform: translateY(-3px);
 }
 
-/* ---------- 6. 左侧个人信息 ---------- */
+/* ---------- 6. 左侧个人信息（行间距已缩小） ---------- */
 .avatar {
     width: 120px;
     height: 120px;
     border-radius: 20px;
     object-fit: cover;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;    /* 原 1rem，缩小 */
     border: 2px solid var(--border);
 }
 
 .sidebar h2 {
     font-size: 1.5rem;
-    margin: 0.5rem 0;
+    margin: 0.25rem 0;         /* 原 0.5rem 0，缩小 */
 }
 
 .bio {
     font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    line-height: 1.4;          /* 原 1.6，缩小行高 */
+    margin-bottom: 1rem;       /* 原 1.5rem，缩小 */
     color: var(--text-secondary);
 }
 
 .social-links {
     display: flex;
     gap: 0.8rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;       /* 原 2rem，缩小 */
     flex-wrap: wrap;
 }
 
@@ -179,7 +179,7 @@ h6 { font-size: 1rem; }
 
 /* ---------- 7. GitHub 贡献图（增强模糊） ---------- */
 .github-chart {
-    margin-top: 1.5rem;
+    margin-top: 0.8rem;        /* 原 1.5rem，缩小 */
 }
 
 .github-chart h3 {
@@ -193,8 +193,8 @@ h6 { font-size: 1rem; }
     height: 130px;
     overflow: hidden;
     border-radius: 12px;
-    background: rgba(255,255,255,0.15);           /* 半透明底色增强模糊可见度 */
-    backdrop-filter: blur(12px);                 /* 新增模糊效果 */
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: var(--card-shadow);
 }
