@@ -6,13 +6,13 @@
             name: 'Sea of Tranquility',
             singer: 'Nigel Stanford',
             src: 'sound/Sea of Tranquility-BeMax.mp3',
-            cover: 'image/sound01.jpeg'
+            cover: 'images/music/sound01.jpeg'
         },
         {
             name: 'Белая кошка',
             singer: 'Мельница',
             src: 'sound/Белаякошка (小白猫).mp3',
-            cover: 'image/sound02.jpeg'
+            cover: 'image/music/sound02.jpeg'
         }
     ];
 
@@ -136,7 +136,7 @@
             // 切换图标为暂停图标（常见的暂停图标类名 'icon-pause'，如果不存在请替换）
             // 如果您的字体库没有暂停图标，可以保留同一个图标，或者使用 'icon-stop'
             if (playIcon) {
-                playIcon.className = 'iconfont icon-pause';   // 请根据实际图标库修改
+                playIcon.className = 'iconfont icon-timeout';   // 请根据实际图标库修改
             }
         }
         isPlaying = !isPlaying;

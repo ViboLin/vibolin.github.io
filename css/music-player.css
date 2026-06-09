@@ -182,6 +182,25 @@
     transform: scale(0.96);
 }
 
+/* 浅色模式 hover 粉色 */
+/* ========== 浅色模式播放器粉色主题 ========== */
+[data-theme="light"] .control-buttons button:hover .iconfont {
+    color: #ff69b4;
+}
+
+[data-theme="light"] .vertical-volume {
+    accent-color: #ff69b4;
+}
+
+[data-theme="light"] .progress-filled {
+    background-color: #ff69b4;
+}
+
+/* 可选：进度条容器悬停时的提示效果 */
+[data-theme="light"] .progress-bar:hover {
+    background-color: rgba(255, 105, 180, 0.2);
+}
+
 /* 响应式适配移动端 */
 @media (max-width: 768px) {
     .volume-extension.open {
