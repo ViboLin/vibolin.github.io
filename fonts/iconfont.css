@@ -1,0 +1,57 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1781002978731') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-play-circle:before {
+  content: "\e781";
+}
+
+.icon-timeout:before {
+  content: "\e783";
+}
+
+.icon-earth:before {
+  content: "\e782";
+}
+
+.icon-bulb:before {
+  content: "\e7c3";
+}
+
+.icon-sound:before {
+  content: "\e7da";
+}
+
+.icon-disconnect:before {
+  content: "\e7e1";
+}
+
+.icon-github-fill:before {
+  content: "\e885";
+}
+
+.icon-google-circle-fill:before {
+  content: "\e887";
+}
+
+.icon-backward:before {
+  content: "\e8ec";
+}
+
+.icon-step-backward:before {
+  content: "\e8ef";
+}
+
+.icon-step-forward:before {
+  content: "\e8f0";
+}
+
