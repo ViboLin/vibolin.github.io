@@ -1,4 +1,9 @@
-/* 微缩版音乐播放器 - 右侧延伸音量面板（Flex 方案） */
+/* ==========================================
+   music-player.css - 优化版右侧延伸音量面板
+   适配字体图标，与博客主题完美融合
+   ========================================== */
+
+/* 播放器外层容器 */
 .mini-player {
     width: 100%;
     background: var(--glass-bg);
@@ -10,21 +15,25 @@
     margin-top: 1.5rem;
     box-sizing: border-box;
     display: flex;
-    flex-direction: row;          /* 横向 flex */
+    flex-direction: row;
     align-items: stretch;
-    overflow: hidden;             /* 圆角裁剪，但动画不受影响 */
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+.mini-player:hover {
+    box-shadow: 0 10px 36px rgba(0,0,0,0.2);
 }
 
-/* 播放器主内容区（自动填充剩余宽度） */
+/* 主内容区（占据剩余宽度） */
 .player-main {
     flex: 1;
-    padding: 0.8rem;
+    padding: 0.7rem 0.8rem;      /* 微调垂直内边距更紧凑 */
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.35rem;                /* 缩小间距 */
 }
 
-/* 右侧延伸音量面板（默认宽度0，展开时30px） */
+/* 右侧延伸音量面板（默认隐藏，宽度0） */
 .volume-extension {
     flex-shrink: 0;
     width: 0;
@@ -38,7 +47,7 @@
     justify-content: center;
 }
 .volume-extension.open {
-    width: 30px;
+    width: 32px;                 /* 稍宽一点，方便触摸 */
 }
 
 /* 垂直音量滑块 */
@@ -47,38 +56,46 @@
     direction: rtl;
     width: 20px;
     height: 70px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
     -webkit-appearance: slider-vertical;
     accent-color: var(--link);
 }
 .vertical-volume:focus {
     outline: none;
 }
+.vertical-volume:hover {
+    opacity: 0.9;
+}
 
-/* 播放器主体布局（横向：封面 + 信息） */
+/* 横向：封面 + 信息 */
 .player-body {
     display: flex;
-    gap: 0.6rem;
+    gap: 0.7rem;
     align-items: center;
 }
 
-/* 封面 */
+/* 封面图片容器 */
 .player-cover {
     flex-shrink: 0;
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
     overflow: hidden;
-    background: #f0f0f0;
+    background: rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .player-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.2s;
+}
+.player-cover:hover img {
+    transform: scale(1.02);
 }
 
-/* 右侧信息区 */
+/* 歌曲信息文字区 */
 .player-info {
     flex: 1;
     min-width: 0;
@@ -90,7 +107,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.2;
+    line-height: 1.3;
 }
 .song-singer {
     font-size: 0.65rem;
@@ -108,65 +125,87 @@
     justify-content: space-between;
     font-size: 0.6rem;
     color: var(--text-secondary);
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.15rem;
 }
 .progress-bar {
     width: 100%;
-    height: 3px;
+    height: 4px;
     background-color: rgba(200,200,200,0.4);
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
     position: relative;
+    transition: height 0.1s;
+}
+.progress-bar:hover {
+    height: 6px;
 }
 .progress-filled {
     width: 0%;
     height: 100%;
     background-color: var(--link);
-    border-radius: 3px;
+    border-radius: 4px;
+    position: relative;
 }
 
-/* 控制栏（按钮） */
+/* 控制按钮行 */
 .controls-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     margin-top: 0.2rem;
 }
 .control-buttons {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
 }
 .control-buttons button {
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 1.1rem;
     padding: 0;
-    color: var(--text);
-    transition: transform 0.1s, color 0.2s;
+    transition: transform 0.15s ease, color 0.2s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
-.control-buttons button:hover {
+.control-buttons button .iconfont {
+    font-size: 1.4rem;          /* 控制字体图标大小 */
+    color: var(--text);
+    transition: all 0.2s;
+}
+.control-buttons button:hover .iconfont {
     color: var(--link);
-    transform: scale(1.05);
+    transform: scale(1.08);
+}
+.control-buttons button:active .iconfont {
+    transform: scale(0.96);
 }
 
-/* 响应式 */
+/* 响应式适配移动端 */
 @media (max-width: 768px) {
     .volume-extension.open {
-        width: 35px;
+        width: 36px;
     }
     .vertical-volume {
         height: 60px;
+        width: 18px;
     }
     .player-cover {
         width: 45px;
         height: 45px;
     }
-    .control-buttons button {
-        font-size: 1rem;
+    .control-buttons button .iconfont {
+        font-size: 1.2rem;
+    }
+    .player-main {
+        padding: 0.6rem;
+        gap: 0.3rem;
+    }
+    .song-name {
+        font-size: 0.8rem;
+    }
+    .song-singer {
+        font-size: 0.6rem;
     }
 }

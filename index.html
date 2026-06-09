@@ -24,11 +24,14 @@
         })();
     </script>
 
-    <!-- 主题 CSS（原文件，完全不变） -->
+    <!-- 主题 CSS -->
     <link rel="stylesheet" href="css/theme.css">
-
-    <!-- 新增扩展 CSS（独立文件） -->
+    <!-- 扩展样式（主题切换按钮等） -->
     <link rel="stylesheet" href="css/custom.css">
+    <!-- 音乐播放器样式 -->
+    <link rel="stylesheet" href="css/music-player.css">
+    <!-- 字体图标库（请确保路径正确） -->
+    <link rel="stylesheet" href="fonts/iconfont.css">
 
     <!-- marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
@@ -38,7 +41,7 @@
     <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌓</button>
 
     <div class="main-layout">
-        <!-- 左侧个人信息（毛玻璃卡片） -->
+        <!-- ========== 左侧个人信息（毛玻璃卡片） ========== -->
         <aside class="sidebar">
             <div class="glass-card">
                 <img class="avatar" src="images/avatar.jpeg" alt="我的头像">
@@ -57,49 +60,57 @@
                     </div>
                 </div>
             </div>
-          <!-- 微缩版音乐播放器（右侧延伸音量面板） -->
-<div class="mini-player">
-    <!-- 主内容区（左侧） -->
-    <div class="player-main">
-        <div class="player-body">
-            <div class="player-cover">
-                <img id="mini-cover-img" src="image/sound01.jpeg" alt="cover">
-            </div>
-            <div class="player-info">
-                <div class="song-name" id="mini-song-name">Sea of Tranquility</div>
-                <div class="song-singer" id="mini-singer">Nigel Stanford</div>
-            </div>
-        </div>
-        <div class="progress-area">
-            <div class="progress-time">
-                <span id="mini-current-time">00:00</span>
-                <span id="mini-total-time">00:00</span>
-            </div>
-            <div class="progress-bar" id="mini-progress-bar">
-                <div class="progress-filled" id="mini-progress-filled"></div>
-            </div>
-        </div>
-        <div class="controls-row">
-            <div class="control-buttons">
-                <button id="mini-prev-btn" title="上一曲">⏮️</button>
-                <button id="mini-play-btn" title="播放/暂停">▶️</button>
-                <button id="mini-next-btn" title="下一曲">⏭️</button>
-                <button id="mini-volume-btn" title="音量">🔊</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- 右侧延伸区域（宽度可变，默认0） -->
-    <div class="volume-extension" id="mini-volume-extension">
-        <input type="range" min="0" max="1" step="0.01" value="0.8" class="vertical-volume" id="mini-vertical-volume" orient="vertical">
-    </div>
-</div>
+            <!-- 微缩版音乐播放器（右侧延伸音量面板） -->
+            <div class="mini-player">
+                <!-- 主内容区 -->
+                <div class="player-main">
+                    <div class="player-body">
+                        <div class="player-cover">
+                            <img id="mini-cover-img" src="image/sound01.jpeg" alt="cover">
+                        </div>
+                        <div class="player-info">
+                            <div class="song-name" id="mini-song-name">Sea of Tranquility</div>
+                            <div class="song-singer" id="mini-singer">Nigel Stanford</div>
+                        </div>
+                    </div>
+                    <div class="progress-area">
+                        <div class="progress-time">
+                            <span id="mini-current-time">00:00</span>
+                            <span id="mini-total-time">00:00</span>
+                        </div>
+                        <div class="progress-bar" id="mini-progress-bar">
+                            <div class="progress-filled" id="mini-progress-filled"></div>
+                        </div>
+                    </div>
+                    <div class="controls-row">
+                        <div class="control-buttons">
+                            <!-- 添加了 id，便于 JS 控制 -->
+                            <button id="mini-prev-btn" title="上一曲">
+                                <span class="iconfont icon-step-backward"></span>
+                            </button>
+                            <button id="mini-play-btn" title="播放">
+                                <span class="iconfont icon-play-circle"></span>
+                            </button>
+                            <button id="mini-next-btn" title="下一曲">
+                                <span class="iconfont icon-step-forward"></span>
+                            </button>
+                            <button id="mini-volume-btn" title="音量">
+                                <span class="iconfont icon-sound"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-<link rel="stylesheet" href="css/music-player.css">
-<script src="js/music-player.js" defer></script>
+                <!-- 右侧延伸区域（音量滑块） -->
+                <div class="volume-extension" id="mini-volume-extension">
+                    <input type="range" min="0" max="1" step="0.01" value="0.8"
+                           class="vertical-volume" id="mini-vertical-volume" orient="vertical">
+                </div>
+            </div>
         </aside>
 
-        <!-- 右侧内容区 -->
+        <!-- ========== 右侧内容区 ========== -->
         <main class="content">
             <!-- 文章列表容器 -->
             <div id="articles-container" class="articles-list"></div>
@@ -108,7 +119,8 @@
         </main>
     </div>
 
-    <!-- 独立 JS 文件（位于 js 文件夹） -->
+    <!-- 独立 JS 文件 -->
     <script src="js/app.js"></script>
+    <script src="js/music-player.js" defer></script>
 </body>
 </html>

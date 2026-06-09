@@ -1,5 +1,6 @@
-// 微缩版音乐播放器 - 左侧延伸音量面板（紧凑版）
+// 微缩版音乐播放器 - 右侧延伸音量面板（适配字体图标）
 (function() {
+    // 歌曲列表（请根据实际路径修改）
     const songs = [
         {
             name: 'Sea of Tranquility',
@@ -20,12 +21,14 @@
     let audio = null;
 
     let playBtn, prevBtn, nextBtn, volumeBtn;
+    let playIcon;               // 播放按钮内的图标元素
     let verticalVolume;
     let progressBar, progressFilled;
     let currentTimeSpan, totalTimeSpan, songNameSpan, singerSpan, coverImg;
     let volumeExtension;
 
     function initPlayer() {
+        // 创建 audio 元素
         audio = document.getElementById('mini-audio-player');
         if (!audio) {
             audio = document.createElement('audio');
@@ -34,6 +37,7 @@
             document.body.appendChild(audio);
         }
 
+        // 获取 DOM 元素
         playBtn = document.getElementById('mini-play-btn');
         prevBtn = document.getElementById('mini-prev-btn');
         nextBtn = document.getElementById('mini-next-btn');
@@ -48,8 +52,17 @@
         coverImg = document.getElementById('mini-cover-img');
         volumeExtension = document.getElementById('mini-volume-extension');
 
-        if (!playBtn) return;
+        // 获取播放按钮内的图标元素
+        if (playBtn) {
+            playIcon = playBtn.querySelector('.iconfont');
+        }
 
+        if (!playBtn || !playIcon) {
+            console.warn('播放器按钮未找到，请检查 HTML 结构');
+            return;
+        }
+
+        // 绑定事件
         playBtn.addEventListener('click', togglePlay);
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
@@ -68,7 +81,9 @@
             verticalVolume.value = audio ? audio.volume : 0.8;
         }
 
-        progressBar.addEventListener('click', setProgress);
+        if (progressBar) {
+            progressBar.addEventListener('click', setProgress);
+        }
         audio.addEventListener('timeupdate', updateProgress);
         audio.addEventListener('loadedmetadata', () => {
             totalTimeSpan.textContent = formatTime(audio.duration);
@@ -97,7 +112,7 @@
         currentTimeSpan.textContent = '00:00';
         totalTimeSpan.textContent = '00:00';
         if (isPlaying) {
-            audio.play().catch(e => console.log('播放被阻止'));
+            audio.play().catch(e => console.log('自动播放被阻止'));
         }
     }
 
@@ -112,10 +127,17 @@
     function togglePlay() {
         if (isPlaying) {
             audio.pause();
-            playBtn.textContent = '▶️';
+            // 切换图标为播放图标（根据您的图标库，可能是 'icon-play-circle'）
+            if (playIcon) {
+                playIcon.className = 'iconfont icon-play-circle';
+            }
         } else {
             audio.play();
-            playBtn.textContent = '⏸️';
+            // 切换图标为暂停图标（常见的暂停图标类名 'icon-pause'，如果不存在请替换）
+            // 如果您的字体库没有暂停图标，可以保留同一个图标，或者使用 'icon-stop'
+            if (playIcon) {
+                playIcon.className = 'iconfont icon-pause';   // 请根据实际图标库修改
+            }
         }
         isPlaying = !isPlaying;
     }
