@@ -1,5 +1,5 @@
 /* ==========================================
-   theme.css - 个人博客主题样式（毛玻璃防闪烁优化）
+   theme.css - 个人博客完整样式（最终整合）
    ========================================== */
 
 /* ---------- 1. 自定义字体（思源宋体双保险） ---------- */
@@ -108,7 +108,7 @@ h6 { font-size: 1rem; }
     min-width: 0;
 }
 
-/* ---------- 5. 毛玻璃卡片（防闪烁核心优化） ---------- */
+/* ---------- 5. 毛玻璃卡片 ---------- */
 .glass-card,
 .article-card {
     background: var(--glass-bg);
@@ -119,9 +119,7 @@ h6 { font-size: 1rem; }
     box-shadow: var(--card-shadow);
     padding: 1.8rem;
     color: var(--text);
-    /* 只过渡不会触发重绘的普通属性 */
     transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s;
-    /* 硬件加速，消除 backdrop-filter 的闪烁 */
     backface-visibility: hidden;
     transform: translateZ(0);
 }
@@ -176,7 +174,6 @@ h6 { font-size: 1rem; }
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     transition: background-color 0.2s, color 0.2s;
-    /* 小按钮也加上防闪烁 */
     backface-visibility: hidden;
     transform: translateZ(0);
 }
@@ -205,7 +202,6 @@ h6 { font-size: 1rem; }
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: var(--card-shadow);
-    /* 防闪烁 */
     backface-visibility: hidden;
     transform: translateZ(0);
 }
@@ -237,6 +233,7 @@ h6 { font-size: 1rem; }
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    isolation: isolate;
 }
 
 .article-card {
@@ -262,7 +259,292 @@ h6 { font-size: 1rem; }
     color: var(--text);
 }
 
-/* ---------- 9. 响应式 ---------- */
+/* ---------- 9. 音乐播放器（防闪烁终极版） ---------- */
+.mini-player {
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    margin-top: 1.5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    contain: layout style paint;
+    will-change: transform;
+}
+
+.mini-player:hover {
+    box-shadow: 0 10px 36px rgba(0,0,0,0.2);
+}
+
+.player-main {
+    flex: 1;
+    padding: 0.7rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.volume-extension {
+    flex-shrink: 0;
+    width: 0;
+    overflow: hidden;
+    background: inherit;
+    backdrop-filter: inherit;
+    border-radius: 0 var(--card-radius) var(--card-radius) 0;
+    transition: width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    contain: layout style;
+    will-change: width;
+}
+
+.volume-extension.open {
+    width: 32px;
+}
+
+.vertical-volume {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 20px;
+    height: 70px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
+    -webkit-appearance: slider-vertical;
+    accent-color: var(--link);
+}
+
+.vertical-volume:focus {
+    outline: none;
+}
+
+.vertical-volume:hover {
+    opacity: 0.9;
+}
+
+.player-body {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.player-cover {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.player-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.player-cover:hover img {
+    transform: scale(1.02);
+}
+
+.player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--heading-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.song-singer {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    margin-top: 0.1rem;
+    line-height: 1.2;
+}
+
+.progress-area {
+    margin-top: 0.2rem;
+}
+
+.progress-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.15rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: rgba(200,200,200,0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: height 0.1s;
+}
+
+.progress-bar:hover {
+    height: 6px;
+}
+
+.progress-filled {
+    width: 0%;
+    height: 100%;
+    background-color: var(--link);
+    border-radius: 4px;
+    position: relative;
+}
+
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 控制按钮 - 彻底告别闪烁 */
+.control-buttons button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.35rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: var(--text);
+    will-change: auto;
+    contain: layout style paint;
+}
+
+.control-buttons button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--link);
+}
+
+.control-buttons button:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.control-buttons button .iconfont {
+    font-size: 1.4rem;
+    transition: none;
+    backface-visibility: hidden;
+}
+
+/* 亮色模式播放器粉色点缀 */
+[data-theme="light"] .control-buttons button:hover .iconfont {
+    color: #ff69b4;
+}
+
+[data-theme="light"] .vertical-volume {
+    accent-color: #ff69b4;
+}
+
+[data-theme="light"] .progress-filled {
+    background-color: #ff69b4;
+}
+
+[data-theme="light"] .progress-bar:hover {
+    background-color: rgba(255, 105, 180, 0.2);
+}
+
+/* ---------- 10. 主题切换按钮 ---------- */
+.theme-toggle {
+    position: fixed;
+    top: 2rem;
+    right: 1rem;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ---------- 11. 文章内容与返回按钮 ---------- */
+.article-content .glass-card {
+    margin-top: 0;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.4rem 1rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    color: var(--link);
+    cursor: pointer;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background-color 0.2s;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Markdown 内容增强 */
+.markdown-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+.markdown-body pre {
+    overflow-x: auto;
+    padding: 1rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+}
+
+.markdown-body a {
+    color: var(--link);
+}
+
+/* ---------- 12. 响应式 ---------- */
 @media (max-width: 768px) {
     .main-layout {
         grid-template-columns: 1fr;
@@ -288,8 +570,42 @@ h6 { font-size: 1rem; }
         aspect-ratio: 16 / 9;
     }
 
-    /* 移动端取消固定背景，避免重绘闪烁 */
     body {
         background-attachment: scroll;
+    }
+
+    .theme-toggle {
+        top: 1rem;
+    }
+
+    .volume-extension.open {
+        width: 36px;
+    }
+
+    .vertical-volume {
+        height: 60px;
+        width: 18px;
+    }
+
+    .player-cover {
+        width: 45px;
+        height: 45px;
+    }
+
+    .control-buttons button .iconfont {
+        font-size: 1.2rem;
+    }
+
+    .player-main {
+        padding: 0.6rem;
+        gap: 0.3rem;
+    }
+
+    .song-name {
+        font-size: 0.8rem;
+    }
+
+    .song-singer {
+        font-size: 0.6rem;
     }
 }
