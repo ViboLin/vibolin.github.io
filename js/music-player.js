@@ -12,7 +12,7 @@
             name: 'Белая кошка',
             singer: 'Мельница',
             src: 'sound/Белаякошка (小白猫).mp3',
-            cover: 'image/music/sound02.jpeg'
+            cover: 'images/music/sound02.jpeg'
         }
     ];
 

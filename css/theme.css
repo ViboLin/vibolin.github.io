@@ -1,5 +1,5 @@
 /* ==========================================
-   theme.css - 个人博客主题样式
+   theme.css - 个人博客主题样式（毛玻璃防闪烁优化）
    ========================================== */
 
 /* ---------- 1. 自定义字体（思源宋体双保险） ---------- */
@@ -108,7 +108,7 @@ h6 { font-size: 1rem; }
     min-width: 0;
 }
 
-/* ---------- 5. 毛玻璃卡片 ---------- */
+/* ---------- 5. 毛玻璃卡片（防闪烁核心优化） ---------- */
 .glass-card,
 .article-card {
     background: var(--glass-bg);
@@ -119,7 +119,11 @@ h6 { font-size: 1rem; }
     box-shadow: var(--card-shadow);
     padding: 1.8rem;
     color: var(--text);
-    transition: background-color 0.3s, border 0.3s, box-shadow 0.3s, transform 0.2s;
+    /* 只过渡不会触发重绘的普通属性 */
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    /* 硬件加速，消除 backdrop-filter 的闪烁 */
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .article-card {
@@ -131,32 +135,32 @@ h6 { font-size: 1rem; }
     transform: translateY(-3px);
 }
 
-/* ---------- 6. 左侧个人信息（行间距已缩小） ---------- */
+/* ---------- 6. 左侧个人信息 ---------- */
 .avatar {
     width: 120px;
     height: 120px;
     border-radius: 20px;
     object-fit: cover;
-    margin-bottom: 0.5rem;    /* 原 1rem，缩小 */
+    margin-bottom: 0.5rem;
     border: 2px solid var(--border);
 }
 
 .sidebar h2 {
     font-size: 1.5rem;
-    margin: 0.25rem 0;         /* 原 0.5rem 0，缩小 */
+    margin: 0.25rem 0;
 }
 
 .bio {
     font-size: 0.95rem;
-    line-height: 1.4;          /* 原 1.6，缩小行高 */
-    margin-bottom: 1rem;       /* 原 1.5rem，缩小 */
+    line-height: 1.4;
+    margin-bottom: 1rem;
     color: var(--text-secondary);
 }
 
 .social-links {
     display: flex;
     gap: 0.8rem;
-    margin-bottom: 1rem;       /* 原 2rem，缩小 */
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
@@ -170,16 +174,20 @@ h6 { font-size: 1rem; }
     text-decoration: none;
     font-size: 0.9rem;
     backdrop-filter: blur(5px);
-    transition: background-color 0.2s;
+    -webkit-backdrop-filter: blur(5px);
+    transition: background-color 0.2s, color 0.2s;
+    /* 小按钮也加上防闪烁 */
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .btn-link:hover {
     background: rgba(255,255,255,0.25);
 }
 
-/* ---------- 7. GitHub 贡献图（增强模糊） ---------- */
+/* ---------- 7. GitHub 贡献图 ---------- */
 .github-chart {
-    margin-top: 0.8rem;        /* 原 1.5rem，缩小 */
+    margin-top: 0.8rem;
 }
 
 .github-chart h3 {
@@ -197,6 +205,9 @@ h6 { font-size: 1rem; }
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: var(--card-shadow);
+    /* 防闪烁 */
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .chart-clip img {
@@ -214,7 +225,6 @@ h6 { font-size: 1rem; }
     clear: both;
 }
 
-/* 明暗滤镜 */
 [data-theme="dark"] .chart-clip img {
     filter: invert(0.9) hue-rotate(180deg);
 }
@@ -276,5 +286,10 @@ h6 { font-size: 1rem; }
         width: 100%;
         height: auto;
         aspect-ratio: 16 / 9;
+    }
+
+    /* 移动端取消固定背景，避免重绘闪烁 */
+    body {
+        background-attachment: scroll;
     }
 }

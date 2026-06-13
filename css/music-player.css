@@ -19,6 +19,9 @@
     align-items: stretch;
     overflow: hidden;
     transition: box-shadow 0.2s ease;
+    /* 硬件加速，避免毛玻璃闪烁 */
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 .mini-player:hover {
     box-shadow: 0 10px 36px rgba(0,0,0,0.2);
@@ -27,10 +30,10 @@
 /* 主内容区（占据剩余宽度） */
 .player-main {
     flex: 1;
-    padding: 0.7rem 0.8rem;      /* 微调垂直内边距更紧凑 */
+    padding: 0.7rem 0.8rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;                /* 缩小间距 */
+    gap: 0.35rem;
 }
 
 /* 右侧延伸音量面板（默认隐藏，宽度0） */
@@ -47,7 +50,7 @@
     justify-content: center;
 }
 .volume-extension.open {
-    width: 32px;                 /* 稍宽一点，方便触摸 */
+    width: 32px;
 }
 
 /* 垂直音量滑块 */
@@ -170,7 +173,7 @@
     justify-content: center;
 }
 .control-buttons button .iconfont {
-    font-size: 1.4rem;          /* 控制字体图标大小 */
+    font-size: 1.4rem;
     color: var(--text);
     transition: all 0.2s;
 }
@@ -182,7 +185,6 @@
     transform: scale(0.96);
 }
 
-/* 浅色模式 hover 粉色 */
 /* ========== 浅色模式播放器粉色主题 ========== */
 [data-theme="light"] .control-buttons button:hover .iconfont {
     color: #ff69b4;
@@ -196,7 +198,6 @@
     background-color: #ff69b4;
 }
 
-/* 可选：进度条容器悬停时的提示效果 */
 [data-theme="light"] .progress-bar:hover {
     background-color: rgba(255, 105, 180, 0.2);
 }
