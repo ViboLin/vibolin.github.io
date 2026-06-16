@@ -47,7 +47,7 @@ jobs:
               {
                 name: $filename,
                 title: (if ($parsed.title | length > 0) then $parsed.title else $fullname end),
-                cover: "images/default-cover.jpg",
+                cover: "images/default.jpg",
                 category: $parsed.cat
               }
             )
