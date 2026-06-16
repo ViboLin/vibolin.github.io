@@ -1,6 +1,6 @@
-// 微缩版音乐播放器 - 右侧延伸音量面板（适配字体图标）
+// music-player.js - 微缩版音乐播放器（优化版）
 (function() {
-    // 歌曲列表（请根据实际路径修改）
+    // 配置项
     const songs = [
         {
             name: 'Sea of Tranquility',
@@ -16,19 +16,22 @@
         }
     ];
 
+    // 图标类名映射（根据实际图标库调整）
+    const ICONS = {
+        play: 'iconfont icon-play-circle',
+        pause: 'iconfont icon-timeout'   // 如无暂停图标，可替换为其他
+    };
+
     let currentIndex = 0;
     let isPlaying = false;
     let audio = null;
+    let playIcon = null;
 
-    let playBtn, prevBtn, nextBtn, volumeBtn;
-    let playIcon;               // 播放按钮内的图标元素
-    let verticalVolume;
-    let progressBar, progressFilled;
-    let currentTimeSpan, totalTimeSpan, songNameSpan, singerSpan, coverImg;
-    let volumeExtension;
+    // DOM 元素（延迟获取）
+    let elements = {};
 
     function initPlayer() {
-        // 创建 audio 元素
+        // 获取或创建音频元素
         audio = document.getElementById('mini-audio-player');
         if (!audio) {
             audio = document.createElement('audio');
@@ -37,61 +40,65 @@
             document.body.appendChild(audio);
         }
 
-        // 获取 DOM 元素
-        playBtn = document.getElementById('mini-play-btn');
-        prevBtn = document.getElementById('mini-prev-btn');
-        nextBtn = document.getElementById('mini-next-btn');
-        volumeBtn = document.getElementById('mini-volume-btn');
-        verticalVolume = document.getElementById('mini-vertical-volume');
-        progressBar = document.getElementById('mini-progress-bar');
-        progressFilled = document.getElementById('mini-progress-filled');
-        currentTimeSpan = document.getElementById('mini-current-time');
-        totalTimeSpan = document.getElementById('mini-total-time');
-        songNameSpan = document.getElementById('mini-song-name');
-        singerSpan = document.getElementById('mini-singer');
-        coverImg = document.getElementById('mini-cover-img');
-        volumeExtension = document.getElementById('mini-volume-extension');
+        // 缓存 DOM 元素
+        elements = {
+            playBtn: document.getElementById('mini-play-btn'),
+            prevBtn: document.getElementById('mini-prev-btn'),
+            nextBtn: document.getElementById('mini-next-btn'),
+            volumeBtn: document.getElementById('mini-volume-btn'),
+            verticalVolume: document.getElementById('mini-vertical-volume'),
+            progressBar: document.getElementById('mini-progress-bar'),
+            progressFilled: document.getElementById('mini-progress-filled'),
+            currentTime: document.getElementById('mini-current-time'),
+            totalTime: document.getElementById('mini-total-time'),
+            songName: document.getElementById('mini-song-name'),
+            singer: document.getElementById('mini-singer'),
+            coverImg: document.getElementById('mini-cover-img'),
+            volumeExtension: document.getElementById('mini-volume-extension')
+        };
 
-        // 获取播放按钮内的图标元素
-        if (playBtn) {
-            playIcon = playBtn.querySelector('.iconfont');
-        }
-
-        if (!playBtn || !playIcon) {
-            console.warn('播放器按钮未找到，请检查 HTML 结构');
-            return;
-        }
+        if (!elements.playBtn) return;
+        playIcon = elements.playBtn.querySelector('.iconfont');
 
         // 绑定事件
-        playBtn.addEventListener('click', togglePlay);
-        prevBtn.addEventListener('click', prevSong);
-        nextBtn.addEventListener('click', nextSong);
-        
-        if (volumeBtn && volumeExtension) {
-            volumeBtn.addEventListener('click', (e) => {
+        elements.playBtn.addEventListener('click', togglePlay);
+        elements.prevBtn.addEventListener('click', prevSong);
+        elements.nextBtn.addEventListener('click', nextSong);
+
+        if (elements.volumeBtn && elements.volumeExtension) {
+            elements.volumeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                volumeExtension.classList.toggle('open');
+                elements.volumeExtension.classList.toggle('open');
             });
         }
 
-        if (verticalVolume) {
-            verticalVolume.addEventListener('input', (e) => {
+        if (elements.verticalVolume) {
+            elements.verticalVolume.addEventListener('input', (e) => {
                 if (audio) audio.volume = parseFloat(e.target.value);
             });
-            verticalVolume.value = audio ? audio.volume : 0.8;
         }
 
-        if (progressBar) {
-            progressBar.addEventListener('click', setProgress);
+        if (elements.progressBar) {
+            elements.progressBar.addEventListener('click', setProgress);
         }
+
+        // 音频事件
         audio.addEventListener('timeupdate', updateProgress);
         audio.addEventListener('loadedmetadata', () => {
-            totalTimeSpan.textContent = formatTime(audio.duration);
+            elements.totalTime.textContent = formatTime(audio.duration);
         });
         audio.addEventListener('ended', nextSong);
+        audio.addEventListener('error', () => {
+            console.warn('音频加载失败:', audio.src);
+            // 可在此处显示错误提示，保持界面不变
+        });
+
+        // 初始音量
+        if (elements.verticalVolume) {
+            elements.verticalVolume.value = audio.volume;
+        }
 
         loadSong(currentIndex);
-        if (audio) audio.volume = verticalVolume ? parseFloat(verticalVolume.value) : 0.8;
     }
 
     function formatTime(seconds) {
@@ -104,40 +111,42 @@
     function loadSong(index) {
         const song = songs[index];
         if (!song) return;
+
+        // 重置界面
+        elements.songName.textContent = song.name;
+        elements.singer.textContent = song.singer;
+        elements.coverImg.src = song.cover;
+        elements.progressFilled.style.width = '0%';
+        elements.currentTime.textContent = '00:00';
+        elements.totalTime.textContent = '00:00';
+
+        // 切换音频源
+        const wasPlaying = isPlaying;
+        audio.pause();
         audio.src = song.src;
-        songNameSpan.textContent = song.name;
-        singerSpan.textContent = song.singer;
-        coverImg.src = song.cover;
-        progressFilled.style.width = '0%';
-        currentTimeSpan.textContent = '00:00';
-        totalTimeSpan.textContent = '00:00';
-        if (isPlaying) {
-            audio.play().catch(e => console.log('自动播放被阻止'));
+        audio.load();
+
+        // 如果之前正在播放，则自动播放新歌
+        if (wasPlaying) {
+            audio.play().catch(e => console.log('自动播放被阻止:', e));
         }
     }
 
     function updateProgress() {
         if (!audio.duration) return;
         const percent = (audio.currentTime / audio.duration) * 100;
-        progressFilled.style.width = `${percent}%`;
-        currentTimeSpan.textContent = formatTime(audio.currentTime);
-        totalTimeSpan.textContent = formatTime(audio.duration);
+        elements.progressFilled.style.width = `${percent}%`;
+        elements.currentTime.textContent = formatTime(audio.currentTime);
+        elements.totalTime.textContent = formatTime(audio.duration);
     }
 
     function togglePlay() {
         if (isPlaying) {
             audio.pause();
-            // 切换图标为播放图标（根据您的图标库，可能是 'icon-play-circle'）
-            if (playIcon) {
-                playIcon.className = 'iconfont icon-play-circle';
-            }
+            if (playIcon) playIcon.className = ICONS.play;
         } else {
             audio.play();
-            // 切换图标为暂停图标（常见的暂停图标类名 'icon-pause'，如果不存在请替换）
-            // 如果您的字体库没有暂停图标，可以保留同一个图标，或者使用 'icon-stop'
-            if (playIcon) {
-                playIcon.className = 'iconfont icon-timeout';   // 请根据实际图标库修改
-            }
+            if (playIcon) playIcon.className = ICONS.pause;
         }
         isPlaying = !isPlaying;
     }
@@ -145,22 +154,21 @@
     function nextSong() {
         currentIndex = (currentIndex + 1) % songs.length;
         loadSong(currentIndex);
-        if (isPlaying) audio.play();
     }
 
     function prevSong() {
         currentIndex = (currentIndex - 1 + songs.length) % songs.length;
         loadSong(currentIndex);
-        if (isPlaying) audio.play();
     }
 
     function setProgress(e) {
-        const rect = progressBar.getBoundingClientRect();
+        const rect = elements.progressBar.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
-        const percent = clickX / rect.width;
+        const percent = Math.max(0, Math.min(1, clickX / rect.width));
         audio.currentTime = percent * audio.duration;
     }
 
+    // 启动
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initPlayer);
     } else {

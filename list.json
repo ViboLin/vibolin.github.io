@@ -2,36 +2,19 @@
   {
     "name": "soccer.md",
     "title": "广州夏季足球体能提升计划",
-    "cover": "images/cover/soccer.jpeg"
+    "cover": "images/cover/soccer.jpeg",
+    "category": "足球"
   },
   {
     "name": "TheGuideOfStudyCSPaper.md",
     "title": "计算机论文读写指南",
-    "cover": "images/cover/default.jpeg"
+    "cover": "images/cover/default.jpeg",
+    "category": "学习技巧"
   },
   {
     "name": "HowToGetTheDegreeOfSZU.md",
     "title": "计算机考研规划",
-    "cover": "images/cover/default.jpeg"
-  },
-  {
-    "name": "TheGuideOfStudyCSPaper.md",
-    "title": "计算机论文读写指南",
-    "cover": "images/cover/default.jpeg"
-  },
-  {
-    "name": "TheGuideOfStudyCSPaper.md",
-    "title": "计算机论文读写指南",
-    "cover": "images/cover/default.jpeg"
-  },
-  {
-    "name": "TheGuideOfStudyCSPaper.md",
-    "title": "计算机论文读写指南",
-    "cover": "images/cover/default.jpeg"
-  },
-  {
-    "name": "TheGuideOfStudyCSPaper.md",
-    "title": "计算机论文读写指南",
-    "cover": "images/cover/default.jpeg"
+    "cover": "images/cover/default.jpeg",
+    "category": "升学"
   }
 ]
