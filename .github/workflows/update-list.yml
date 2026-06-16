@@ -1,4 +1,4 @@
-name: Auto Update list.json
+name: Auto Update list.json & Deploy
 
 on:
   push:
@@ -6,35 +6,40 @@ on:
       - 'text/**.md'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  update-list:
+  update-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate list.json
-        shell: bash
+      - name: Generate list.json (incremental)
         run: |
           cd text
           shopt -s nullglob
           md_files=(*.md)
 
+          # 如果 text 目录没有 .md 文件，生成空数组（但保留原有 list.json？这里根据需求决定）
           if [ ${#md_files[@]} -eq 0 ]; then
             echo "[]" > ../list.json
             exit 0
           fi
 
-          # 用 jq 处理每个文件名
-          printf '%s\n' "${md_files[@]}" | jq -R -s '
+          # 生成当前扫描到的文件列表的默认条目（JSON 数组）
+          current_files_json=$(printf '%s\n' "${md_files[@]}" | jq -R -s '
             split("\n") | map(select(length > 0)) |
             map(
               . as $filename |
               ($filename | rtrimstr(".md")) as $fullname |
-
-              # 提取「分类」标题
               (if $fullname | test("「.*」") then
                 ($fullname | capture("「(?<cat>.*?)」\\s*(?<title>.*)") // {
                   cat: ($fullname | sub("「(?<cat>.*?)」.*"; "\(.cat)")),
@@ -43,19 +48,50 @@ jobs:
               else
                 {cat: "未分类", title: $fullname}
               end) as $parsed |
-
               {
                 name: $filename,
                 title: (if ($parsed.title | length > 0) then $parsed.title else $fullname end),
-                cover: "images/default.jpg",
+                cover: "images/default.jpeg",
                 category: $parsed.cat
               }
             )
-          ' > ../list.json
+          ')
 
-      - name: Commit and push if changed
+          # 如果根目录已有 list.json，则合并；否则直接用新生成的
+          if [ -f ../list.json ]; then
+            # 以现有 list.json 为基础，对于每个当前存在的文件：
+            # - 如果已有条目，保留原有所有字段
+            # - 如果是新文件，添加默认条目
+            merged_json=$(jq -n --argjson current "$current_files_json" --argjson old "$(cat ../list.json)" '
+              # 将旧条目转为以 name 为 key 的对象
+              ($old | map({(.name): .}) | add) as $old_map |
+              # 遍历当前文件，构建新数组
+              [ $current[] | . as $new_item | $old_map[$new_item.name] // $new_item ]
+            ')
+            echo "$merged_json" > ../list.json
+          else
+            echo "$current_files_json" > ../list.json
+          fi
+
+      - name: Commit and push list.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add list.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 自动更新 list.json（含分类）" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 自动更新 list.json（增量）" && git push)
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
