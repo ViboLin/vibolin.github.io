@@ -1,18 +1,15 @@
-// login.js - 登录/注册逻辑（继承博客主题，明文模拟）
+// login.js - 登录/注册逻辑（继承博客主题，明文存储模拟）
 (function () {
     // ---------- 配置 ----------
-    const ACCOUNTS_JSON_URL = './account.json';      // 初始账号文件
-    const HOME_PAGE_URL = 'index.html';            // 登录成功跳转主页
+    const ACCOUNTS_JSON_URL = './account.json';
+    const HOME_PAGE_URL = './index.html';
 
-    // 内存中的账户集合（初始文件 + localStorage 注册的）
     let accounts = [];
-
-    // DOM 元素
-    let authCard, themeToggle;
+    let authCard;
 
     // ---------- 主题切换 ----------
     function initTheme() {
-        themeToggle = document.getElementById('themeToggle');
+        const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => {
                 const html = document.documentElement;
@@ -29,16 +26,14 @@
         try {
             const res = await fetch(ACCOUNTS_JSON_URL);
             if (!res.ok) throw new Error('账户文件加载失败');
-            const jsonAccounts = await res.json();
-            accounts = jsonAccounts;
+            accounts = await res.json();
         } catch (e) {
             console.warn('account.json 加载失败，使用空账户列表', e);
             accounts = [];
         }
 
-        // 合并 localStorage 中注册的用户（本地模拟持久化）
+        // 合并本地注册的账户
         const localRegistered = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
-        // 去重（以邮箱为准）
         localRegistered.forEach(localUser => {
             if (!accounts.find(a => a.email === localUser.email)) {
                 accounts.push(localUser);
@@ -47,15 +42,79 @@
     }
 
     function saveRegisteredAccount(user) {
-        // 保存到 localStorage（模拟写入 account.json）
         const local = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
         local.push(user);
         localStorage.setItem('registeredAccounts', JSON.stringify(local));
-        // 同时更新内存
         accounts.push(user);
     }
 
-    // ---------- UI 渲染 ----------
+    // ---------- 消息提示 ----------
+    function showMessage(text, isError = true) {
+        const area = document.getElementById('msgArea');
+        if (!area) return;
+        const cls = isError ? 'msg-error' : 'msg-success';
+        area.innerHTML = `<span class="${cls}">${text}</span>`;
+        setTimeout(() => { if (area.firstChild) area.innerHTML = ''; }, 4000);
+    }
+
+    // ---------- 登录处理 ----------
+    function handleLogin() {
+        const email = document.getElementById('loginEmail')?.value.trim();
+        const password = document.getElementById('loginPassword')?.value;
+
+        if (!email || !password) {
+            showMessage('邮箱和密码不能为空');
+            return;
+        }
+
+        const user = accounts.find(a => a.email === email && a.password === password);
+        if (!user) {
+            showMessage('邮箱或密码错误');
+            return;
+        }
+
+        const remember = document.getElementById('rememberMe')?.checked;
+        if (remember) {
+            localStorage.setItem('rememberedEmail', email);
+        } else {
+            localStorage.removeItem('rememberedEmail');
+        }
+
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('loginUser', user.username || user.email);
+        showMessage(`✅ 登录成功！欢迎回来，${user.username || user.email}`, false);
+
+        setTimeout(() => {
+            window.location.href = HOME_PAGE_URL;
+        }, 1000);
+    }
+
+    // ---------- 注册处理 ----------
+    function handleRegister() {
+        const username = document.getElementById('regUsername')?.value.trim();
+        const email = document.getElementById('regEmail')?.value.trim();
+        const password = document.getElementById('regPassword')?.value;
+        const password2 = document.getElementById('regPassword2')?.value;
+
+        if (!username || !email || !password) {
+            showMessage('请填写完整信息');
+            return;
+        }
+        if (password !== password2) {
+            showMessage('两次密码不一致');
+            return;
+        }
+        if (accounts.some(a => a.email === email)) {
+            showMessage('该邮箱已被注册');
+            return;
+        }
+
+        saveRegisteredAccount({ email, username, password });
+        showMessage('🎉 注册成功！即将跳转登录...', false);
+        setTimeout(() => renderLoginForm(), 1500);
+    }
+
+    // ---------- 渲染登录表单 ----------
     function renderLoginForm() {
         if (!authCard) return;
         authCard.innerHTML = `
@@ -86,7 +145,7 @@
             </div>
         `;
 
-        // 绑定事件
+        // 事件绑定
         document.getElementById('loginBtn').addEventListener('click', handleLogin);
         document.getElementById('toRegisterLink').addEventListener('click', (e) => {
             e.preventDefault();
@@ -97,7 +156,7 @@
             showMessage('演示模式：请联系管理员重置密码', false);
         });
 
-        // 自动填充记住的账号
+        // 自动填充
         const remembered = localStorage.getItem('rememberedEmail');
         if (remembered) {
             document.getElementById('loginEmail').value = remembered;
@@ -110,8 +169,12 @@
                 if (e.key === 'Enter') handleLogin();
             });
         });
+
+        // 将导出按钮嵌入卡片底部
+        insertExportButton();
     }
 
+    // ---------- 渲染注册表单 ----------
     function renderRegisterForm() {
         if (!authCard) return;
         authCard.innerHTML = `
@@ -149,93 +212,45 @@
             renderLoginForm();
         });
 
-        // 回车提交
         ['regUsername', 'regEmail', 'regPassword', 'regPassword2'].forEach(id => {
             document.getElementById(id).addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleRegister();
             });
         });
+
+        // 将导出按钮嵌入卡片底部
+        insertExportButton();
     }
 
-    // ---------- 消息显示 ----------
-    function showMessage(text, isError = true) {
-        const area = document.getElementById('msgArea');
-        if (!area) return;
-        const cls = isError ? 'msg-error' : 'msg-success';
-        area.innerHTML = `<span class="${cls}">${text}</span>`;
-        setTimeout(() => { if (area.firstChild) area.innerHTML = ''; }, 4000);
-    }
+    // ---------- 导出按钮（动态插入卡片内部） ----------
+    function insertExportButton() {
+        if (!authCard) return;
+        // 移除可能已存在的旧按钮
+        const oldBtn = authCard.querySelector('.export-btn');
+        if (oldBtn) oldBtn.remove();
 
-    // ---------- 登录处理 ----------
-    function handleLogin() {
-        const email = document.getElementById('loginEmail')?.value.trim();
-        const password = document.getElementById('loginPassword')?.value;
+        // 创建导出按钮区域
+        const exportHtml = `
+            <div class="export-inner" style="margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); text-align: center;">
+                <button id="exportBtn" class="export-btn">📥 导出注册用户 (account.json)</button>
+            </div>
+        `;
+        authCard.insertAdjacentHTML('beforeend', exportHtml);
 
-        if (!email || !password) {
-            showMessage('邮箱和密码不能为空');
-            return;
+        // 绑定事件
+        const btn = document.getElementById('exportBtn');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                alert('已导出，请联系网站所有者添加');
+            });
         }
-
-        // 在合并后的账户列表中查找
-        const user = accounts.find(a => a.email === email && a.password === password);
-        if (!user) {
-            showMessage('邮箱或密码错误');
-            return;
-        }
-
-        // 记住我
-        const remember = document.getElementById('rememberMe')?.checked;
-        if (remember) {
-            localStorage.setItem('rememberedEmail', email);
-        } else {
-            localStorage.removeItem('rememberedEmail');
-        }
-
-        // 登录成功，设置登录态
-        sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('loginUser', user.username || user.email);
-        showMessage(`✅ 登录成功！欢迎回来，${user.username || user.email}`, false);
-
-        // 跳转主页
-        setTimeout(() => {
-            window.location.href = HOME_PAGE_URL;
-        }, 1000);
-    }
-
-    // ---------- 注册处理 ----------
-    function handleRegister() {
-        const username = document.getElementById('regUsername')?.value.trim();
-        const email = document.getElementById('regEmail')?.value.trim();
-        const password = document.getElementById('regPassword')?.value;
-        const password2 = document.getElementById('regPassword2')?.value;
-
-        if (!username || !email || !password) {
-            showMessage('请填写完整信息');
-            return;
-        }
-        if (password !== password2) {
-            showMessage('两次密码不一致');
-            return;
-        }
-        if (accounts.some(a => a.email === email)) {
-            showMessage('该邮箱已被注册');
-            return;
-        }
-
-        const newUser = { email, username, password };
-        saveRegisteredAccount(newUser);
-
-        showMessage('🎉 注册成功！即将跳转登录...', false);
-        setTimeout(() => {
-            renderLoginForm();
-        }, 1500);
     }
 
     // ---------- 初始化 ----------
     document.addEventListener('DOMContentLoaded', async () => {
         authCard = document.getElementById('authCard');
         initTheme();
-        await loadAccounts();          // 加载账号数据
-        renderLoginForm();            // 默认显示登录
+        await loadAccounts();
+        renderLoginForm();   // 登录表单 + 内部导出按钮
     });
 })();
