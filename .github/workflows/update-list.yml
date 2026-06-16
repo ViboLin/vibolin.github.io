@@ -15,24 +15,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate list.json with category
+      - name: Generate list.json
+        shell: bash
         run: |
           cd text
-          files=$(ls *.md 2>/dev/null)
-          if [ -z "$files" ]; then
+          shopt -s nullglob
+          md_files=(*.md)
+
+          if [ ${#md_files[@]} -eq 0 ]; then
             echo "[]" > ../list.json
             exit 0
           fi
 
-          echo "$files" | jq -R -s -c '
+          # 用 jq 处理每个文件名
+          printf '%s\n' "${md_files[@]}" | jq -R -s '
             split("\n") | map(select(length > 0)) |
             map(
               . as $filename |
               ($filename | rtrimstr(".md")) as $fullname |
 
-              # 尝试匹配「分类」格式
+              # 提取「分类」标题
               (if $fullname | test("「.*」") then
-                ($fullname | capture("「(?<cat>.*?)」\\s*(?<title>.*)") // {cat: ($fullname | sub("「(?<cat>.*?)」.*"; "\(.cat)")), title: ($fullname | sub("「.*?」\\s*"; ""))})
+                ($fullname | capture("「(?<cat>.*?)」\\s*(?<title>.*)") // {
+                  cat: ($fullname | sub("「(?<cat>.*?)」.*"; "\(.cat)")),
+                  title: ($fullname | sub("「.*?」\\s*"; ""))
+                })
               else
                 {cat: "未分类", title: $fullname}
               end) as $parsed |
@@ -45,11 +52,10 @@ jobs:
               }
             )
           ' > ../list.json
-        shell: bash
 
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add list.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "自动更新 list.json（含分类）" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 自动更新 list.json（含分类）" && git push)
