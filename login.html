@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsukaLin · 登录</title>
+
+    <!-- 主题防闪烁 -->
+    <script>
+        (function () {
+            const stored = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            if (stored) {
+                document.documentElement.setAttribute('data-theme', stored);
+            } else {
+                document.documentElement.setAttribute('data-theme', prefersDark.matches ? 'dark' : 'light');
+            }
+        })();
+    </script>
+
+    <!-- 样式路径调整 -->
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌓</button>
+
+    <div class="login-card" id="authCard"></div>
+
+        <div class="export-container">
+        <button id="exportBtn" class="export-btn">
+            📥 导出注册用户 (account.json)
+        </button>
+    </div>
+
+    <!-- JS 路径调整 -->
+    <script src="js/login.js"></script>
+</body>
+</html>

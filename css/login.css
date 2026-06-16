@@ -1,0 +1,276 @@
+/* ==========================================
+   login.css - 登录/注册页样式（继承博客主题）
+   ========================================== */
+
+/* ---------- 主题变量（与博客完全一致） ---------- */
+:root,
+[data-theme="dark"] {
+    --bg: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text: #e0e0e0;
+    --text-secondary: #a0a0b0;
+    --heading-color: #ffffff;
+    --link: #8ab4f8;
+    --border: #2a2a4a;
+    --shadow: rgba(255,255,255,0.05);
+    --bg-image: url('../images/element/motoko.jpg');
+    --glass-bg: rgba(20, 30, 50, 0.6);
+    --glass-border: rgba(255,255,255,0.15);
+    --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    --glass-blur: 16px;
+    --card-radius: 24px;
+}
+
+[data-theme="light"] {
+    --bg: #fcf6e8;
+    --bg-secondary: #f5f0e6;
+    --text: #333333;
+    --text-secondary: #555555;
+    --heading-color: #1a1a1a;
+    --link: #0366d6;
+    --border: rgba(0,0,0,0.12);
+    --shadow: rgba(0,0,0,0.06);
+    --bg-image: url('../images/element/sakura.png');
+    --glass-bg: rgba(255,255,255,0.5);
+    --glass-border: rgba(255,255,255,0.5);
+    --card-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    --glass-blur: 16px;
+    --card-radius: 24px;
+}
+
+/* ---------- 全局 ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--bg);
+    background-image: var(--bg-image);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    padding: 1.5rem;
+    color: var(--text);
+    transition: background-color 0.3s, background-image 0.3s;
+}
+
+/* ---------- 主题切换按钮（固定在右上角） ---------- */
+.theme-toggle {
+    position: fixed;
+    top: 2rem;
+    right: 1rem;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ---------- 毛玻璃卡片（登录/注册共用） ---------- */
+.login-card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 2.2rem 2rem 2.5rem;
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-2px);
+}
+
+/* 标题 */
+.card-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--heading-color);
+    text-align: center;
+    margin-bottom: 1.8rem;
+    position: relative;
+}
+
+.card-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--link);
+    border-radius: 4px;
+    margin: 0.5rem auto 0;
+}
+
+/* ---------- 表单 ---------- */
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-row label {
+    width: 70px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--heading-color);
+    text-align: right;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.input-row input:focus {
+    border-color: var(--link);
+    background: rgba(255,255,255,0.3);
+    box-shadow: 0 0 0 3px rgba(22,119,255,0.2);
+}
+
+.input-row input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* 选项行（记住我 + 忘记密码） */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.2rem 0 1.8rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.forgot-link {
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--link);
+}
+
+.forgot-link:hover {
+    opacity: 0.8;
+}
+
+/* 按钮 */
+.btn-primary {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--link);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 1rem;
+    font-family: inherit;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+/* 切换提示 */
+.switch-prompt {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.2rem;
+    margin-top: 0.4rem;
+}
+
+.switch-prompt a {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.3rem;
+}
+
+.switch-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* 消息区 */
+.message-area {
+    min-height: 2.5rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+}
+
+.msg-error {
+    color: #dc2626;
+    background: rgba(255,240,240,0.7);
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.msg-success {
+    color: #059669;
+    background: rgba(220,252,231,0.7);
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* 响应式 */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.8rem 1.5rem 2rem;
+    }
+    .input-row label {
+        width: 60px;
+        font-size: 0.9rem;
+    }
+}
