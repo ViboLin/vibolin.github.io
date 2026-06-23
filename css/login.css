@@ -17,8 +17,8 @@
     --glass-bg: rgba(20, 30, 50, 0.6);
     --glass-border: rgba(255,255,255,0.15);
     --card-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    --glass-blur: 16px;
-    --card-radius: 24px;
+    --glass-blur: 12px;
+    --card-radius: 20px;
 }
 
 [data-theme="light"] {
@@ -31,11 +31,11 @@
     --border: rgba(0,0,0,0.12);
     --shadow: rgba(0,0,0,0.06);
     --bg-image: url('../images/element/sakura.png');
-    --glass-bg: rgba(255,255,255,0.5);
-    --glass-border: rgba(255,255,255,0.5);
+    --glass-bg: transparent;
+    --glass-border: rgba(0,0,0,0.08);
     --card-shadow: 0 8px 32px rgba(0,0,0,0.04);
-    --glass-blur: 16px;
-    --card-radius: 24px;
+    --glass-blur: 12px;
+    --card-radius: 20px;
 }
 
 /* ---------- 全局 ---------- */
@@ -96,6 +96,7 @@ body {
     box-shadow: var(--card-shadow);
     padding: 2.2rem 2rem 2.5rem;
     transition: transform 0.25s ease, box-shadow 0.3s ease;
+    animation: slideUp 0.6s ease-out;
 }
 
 .login-card:hover {
@@ -264,6 +265,17 @@ body {
     display: inline-block;
 }
 
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* 响应式 */
 @media (max-width: 480px) {
     .login-card {
@@ -274,6 +286,13 @@ body {
         font-size: 0.9rem;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .login-card {
+        animation: none;
+    }
+}
+
 /* ---------- 导出按钮 ---------- */
 .export-btn {
     display: inline-block;

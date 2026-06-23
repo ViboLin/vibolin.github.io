@@ -236,6 +236,10 @@ h6 { font-size: 1rem; }
     clear: both;
 }
 
+.sidebar .glass-card:hover {
+    box-shadow: 0 10px 36px rgba(0,0,0,0.2);
+}
+
 [data-theme="dark"] .chart-clip img {
     filter: invert(0.9) hue-rotate(180deg);
 }
@@ -324,6 +328,8 @@ h6 { font-size: 1rem; }
     background: rgba(255,255,255,0.25);
     border-radius: 12px;
     -webkit-appearance: slider-vertical;
+    writing-mode: vertical-lr;
+    direction: rtl;
     accent-color: var(--link);
 }
 
@@ -545,10 +551,36 @@ h6 { font-size: 1rem; }
     color: var(--link);
 }
 
+/* 文章内视频自适应容器 */
+.markdown-body .video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 比例 */
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.markdown-body .video-wrapper video,
+.markdown-body .video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 /* ========== 导航模块（分类 + 最近文章） ========== */
 .nav-module {
   margin-top: 1.5rem;
   padding: 1.2rem;
+}
+
+.nav-module:hover {
+    box-shadow: 0 10px 36px rgba(0,0,0,0.2);
 }
 
 .nav-section {

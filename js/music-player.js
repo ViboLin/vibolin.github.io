@@ -73,8 +73,9 @@
         }
 
         if (elements.verticalVolume) {
+            audio.volume = parseFloat(elements.verticalVolume.value); // 初始化为滑块当前值
             elements.verticalVolume.addEventListener('input', (e) => {
-                if (audio) audio.volume = parseFloat(e.target.value);
+            audio.volume = parseFloat(e.target.value);
             });
         }
 

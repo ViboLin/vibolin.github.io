@@ -90,29 +90,41 @@
     }
 
     // ---------- 注册处理 ----------
-    function handleRegister() {
-        const username = document.getElementById('regUsername')?.value.trim();
-        const email = document.getElementById('regEmail')?.value.trim();
-        const password = document.getElementById('regPassword')?.value;
-        const password2 = document.getElementById('regPassword2')?.value;
+function handleRegister() {
+    const username = document.getElementById('regUsername')?.value.trim();
+    const email = document.getElementById('regEmail')?.value.trim();
+    const password = document.getElementById('regPassword')?.value;
+    const password2 = document.getElementById('regPassword2')?.value;
 
-        if (!username || !email || !password) {
-            showMessage('请填写完整信息');
-            return;
-        }
-        if (password !== password2) {
-            showMessage('两次密码不一致');
-            return;
-        }
-        if (accounts.some(a => a.email === email)) {
-            showMessage('该邮箱已被注册');
-            return;
-        }
-
-        saveRegisteredAccount({ email, username, password });
-        showMessage('🎉 注册成功！即将跳转登录...', false);
-        setTimeout(() => renderLoginForm(), 1500);
+    if (!username || !email || !password) {
+        showMessage('请填写完整信息');
+        return;
     }
+    if (password !== password2) {
+        showMessage('两次密码不一致');
+        return;
+    }
+
+    // 新增：邮箱格式校验（标准电子邮箱正则）
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showMessage('请输入有效的邮箱地址');
+        return;
+    }
+
+    if (accounts.some(a => a.email === email)) {
+        showMessage('该邮箱已被注册');
+        return;
+    }
+
+    const newUser = { email, username, password };
+    saveRegisteredAccount(newUser);
+
+    showMessage('🎉 注册成功！即将跳转登录...', false);
+    setTimeout(() => {
+        renderLoginForm();
+    }, 1500);
+}
 
     // ---------- 渲染登录表单 ----------
     function renderLoginForm() {
